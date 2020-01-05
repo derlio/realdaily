@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const program = require('commander')
 const {
     spawn
@@ -31,7 +32,7 @@ gitlog.stdout.on('data', data => {
     const pb = spawn('pbcopy');
     pb.stdin.write(template + data);
     pb.stdin.end();
-      
+
 });
 
 gitlog.stderr.on('data', data => {
@@ -40,7 +41,8 @@ gitlog.stderr.on('data', data => {
 
 gitlog.on('close', code => {
     if (logData == undefined) {
-        console.log('没有commit')
+        console.log('没有commit!')
+    } else {
+        console.log('RB copied, have a nice day!');
     }
-    console.log('RB copied, have a nice day!');
 });
