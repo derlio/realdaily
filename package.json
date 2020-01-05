@@ -1,0 +1,17 @@
+{
+  "name": "realdaily",
+  "version": "1.0.1",
+  "description": "real daily report",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Derlio",
+  "license": "ISC",
+  "bin": {
+    "realdaily": "bin/realdaily.js"
+  },
+  "dependencies": {
+    "commander": "^4.0.1",
+    "ora": "^4.0.3"
+  }
+}
