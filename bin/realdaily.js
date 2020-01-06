@@ -25,7 +25,7 @@ if (program.since.includes('today')) {
     template = program.since + "日报\n";
 }
 
-const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s%nhttp://code.jiecao.me/android/android-social-app/commit/%H', '--since', program.since, '--until', program.until, '--author', program.author]);
+const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s%nhttp://code.jiecao.me/android/android-social-app/commit/%H', '--since', program.since, '--until', program.until, '--author', program.author, '--all']);
 let result = "";
 gitlog.stdout.on('data', data => {
     result += data;
