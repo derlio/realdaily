@@ -1,6 +1,6 @@
 {
   "name": "realdaily",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "real daily report",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
