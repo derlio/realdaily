@@ -20,19 +20,15 @@ if (program.author == undefined) {
 let template;
 if (program.since.includes('today')) {
     var today = new Date();
-    template = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + "日报\n";
+    template = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " 日报\n";
 } else {
     template = program.since + "日报\n";
 }
 
 const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format="%ai %s%nhttp://code.jiecao.me/android/android-social-app/commit/%H"', '--since', program.since, '--until', program.until, '--author', program.author]);
-let logData;
+let result = "";
 gitlog.stdout.on('data', data => {
-    logData = data;
-    const pb = spawn('pbcopy');
-    pb.stdin.write(template + data);
-    pb.stdin.end();
-
+    result += data;
 });
 
 gitlog.stderr.on('data', data => {
@@ -40,9 +36,14 @@ gitlog.stderr.on('data', data => {
 });
 
 gitlog.on('close', code => {
-    if (logData == undefined) {
+    if (result == undefined) {
         console.log('没有commit!')
     } else {
+        const pb = spawn('pbcopy');
+        result = template + result;
+        console.log(result)
+        pb.stdin.write(result);
+        pb.stdin.end();
         console.log('RB copied, have a nice day!');
     }
 });
