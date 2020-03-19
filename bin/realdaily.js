@@ -20,15 +20,29 @@ if (program.author == undefined) {
 let template;
 if (program.since.includes('today')) {
     var today = new Date();
-    template = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " 日报\n";
+    template = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " 日报\n\n";
 } else {
-    template = program.since + "日报\n";
+    template = program.since + "日报\n\n";
 }
 
 const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s', '--since', program.since, '--until', program.until, '--author', program.author, '--all']);
 let result = "";
 gitlog.stdout.on('data', data => {
-    result += data;
+    let dataStr = data.toString();
+    if (dataStr.length == 0) {
+        return;
+    }
+    let lines = dataStr.split("\n");
+    for (i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        if (!line.startsWith("index")) {
+            if (i == lines.length - 1) {
+                result += line;
+            } else {
+                result += line + "\n";
+            }
+        }
+    }
 });
 
 gitlog.stderr.on('data', data => {
