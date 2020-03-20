@@ -27,6 +27,7 @@ if (program.since.includes('today')) {
 
 const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s', '--since', program.since, '--until', program.until, '--author', program.author, '--all']);
 let result = "";
+let lineNumber = 1;
 gitlog.stdout.on('data', data => {
     let dataStr = data.toString();
     if (dataStr.length == 0) {
@@ -35,12 +36,17 @@ gitlog.stdout.on('data', data => {
     let lines = dataStr.split("\n");
     for (i = 0; i < lines.length; i++) {
         let line = lines[i];
-        if (!line.startsWith("index")) {
-            if (i == lines.length - 1) {
-                result += line;
-            } else {
-                result += line + "\n";
+        if (!line.startsWith("index") && line.trim().length > 0) {
+            let index = line.indexOf("]")
+            if (index != -1 && index < line.length) {
+                line = line.substring(index + 1)
             }
+            if (i == lines.length - 1) {
+                result += lineNumber + "." + line;
+            } else {
+                result += lineNumber + "." + line + "\n";
+            }
+            lineNumber++;
         }
     }
 });
