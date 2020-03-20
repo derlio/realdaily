@@ -8,7 +8,7 @@ const {
 program.version(require('../package').version)
     .usage('[options]')
     .option('-a, --author <string>', 'author username')
-    .option('-d, --date <date>', 'date, e.g. 2020-01-01')
+    .option('-d, --date <date>', 'date, MMdd, yyMMdd, yyyyMMdd, MM-dd, yy-MM-dd, yyyy-MM-dd')
     .parse(process.argv);
 
 if (program.author == undefined) {
