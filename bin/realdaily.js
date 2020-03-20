@@ -20,12 +20,12 @@ if (program.author == undefined) {
 let template;
 if (program.since.includes('today')) {
     var today = new Date();
-    template = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " 日报\n\n";
+    template = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " 日报\n";
 } else {
-    template = program.since + "日报\n\n";
+    template = program.since + "日报\n";
 }
 
-const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s', '--since', program.since, '--until', program.until, '--author', program.author, '--all']);
+const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s', '--since', program.since  + " 00:00", '--until', program.until + " 00:00", '--author', program.author, '--all']);
 let result = "";
 let lineNumber = 1;
 gitlog.stdout.on('data', data => {
