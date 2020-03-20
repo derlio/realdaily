@@ -8,24 +8,48 @@ const {
 program.version(require('../package').version)
     .usage('[options]')
     .option('-a, --author <string>', 'author username')
-    .option('--since <date>', 'date, e.g. 2020-01-01', 'today.midnight')
-    .option('--until <date>', 'date, e.g. 2020-01-02')
+    .option('-d, --date <date>', 'date, e.g. 2020-01-01')
     .parse(process.argv);
 
 if (program.author == undefined) {
     console.log('author参数不能为空')
     return
 }
-
-let template;
-if (program.since.includes('today')) {
+let since = undefined
+let until = undefined
+if (program.date == undefined) {
     var today = new Date();
-    template = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate() + " 日报\n";
+    since = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+    today.setDate(today.getDate() + 1)
+    until = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 } else {
-    template = program.since + "日报\n";
+    if (program.date.includes("-")) {
+        sinceSpliteArr = program.date.split("-");
+        if (sinceSpliteArr.length == 2) {
+            program.date = "2020-" + program.date;
+        } else if (sinceSpliteArr.length == 3) {
+            if (sinceSpliteArr[0].length == 2) {
+                program.date = "20" + program.date;
+            }
+        }
+    } else {
+        if (program.date.length == 4) {
+            program.date = "2020-" + program.date.substring(0, 2) + "-" + program.date.substring(2)
+        } else if (program.date.length == 6) {
+            program.date = "20" + program.date.substring(0, 2) + "-" + program.date.substring(2, 4) + "-" + program.date.substring(4)
+        }
+    }
+    let time = new Date(Date.parse(program.date));
+    since = time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
+    time.setDate(time.getDate() + 1);
+    until = time.getFullYear() + "-" + (time.getMonth() + 1) + "-" + time.getDate();
 }
 
-const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s', '--since', program.since  + " 00:00", '--until', program.until + " 00:00", '--author', program.author, '--all']);
+let template = since + "日报\n";
+since = since + " 00:00";
+until = until + " 00:00";
+
+const gitlog = spawn('git', ['log', '--no-merges', '--reverse', '--format=%s', '--since', since, '--until', until, '--author', program.author, '--all']);
 let result = "";
 let lineNumber = 1;
 gitlog.stdout.on('data', data => {
